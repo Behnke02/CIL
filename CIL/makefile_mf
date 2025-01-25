@@ -1,0 +1,14 @@
+CC = g++
+DEBUG = -g
+CFLAGS = -Wall -pedantic -c -std=c++17 $(DEBUG)
+LFLAGS = -Wall -pedantic $(DEBUG)
+
+
+CILInterpter : interpreter.o
+	$(CC) $(LFLAGS) interpreter.o -o CILInterpter
+
+interpreter.o : interpreter.cpp
+	$(CC) $(CFLAGS) interpreter.cpp
+
+clean:
+	\rm *.o CILInterpter
