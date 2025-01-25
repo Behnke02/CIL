@@ -1,5 +1,7 @@
 #include "interpreter.hpp"
 
+//NOTE: This program no longer compiles due to changes in the dependent .hpp file
+
 int main(int argc, char **argv)
 {
     FILE *fileptr = fopen("DummyFile.cil", "r");

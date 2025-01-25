@@ -44,7 +44,7 @@ int main(int argc, char **argv)
         //Vector of additional program arguments
     std::vector<std::string> kwargs;
     //Attempt to open provided file name
-        //Check for correct file extension ".cil"
+        //TODO: Check for correct file extension ".cil"
 
 
         //Check for successful file open
@@ -71,6 +71,7 @@ int main(int argc, char **argv)
     if(!processCommands(fileptr, kwargs))
     {
         //Error in Program Execution
+        //TODO: Log line of error occurence
         //Log Error Message
         std::cout << "Error occured in program execution" << std::endl;
         std::cout << "Ending Program" << std::endl;
@@ -186,7 +187,13 @@ bool tokenizeCommands(std::string bufferString)
         scannedToken->appendArgs(token);
     }
    
-    executeToken(scannedToken);
+    if(!executeToken(scannedToken))
+    {
+        delete[] cString;
+        delete scannedToken;
+        stringTokens.clear();
+        return false;
+    }
 
     //Return operation success
     delete[] cString;
@@ -195,7 +202,7 @@ bool tokenizeCommands(std::string bufferString)
     return true;
 }
 
-void executeToken(Token* const token)
+bool executeToken(Token* const token)
 {
     switch(token->getType())
     {
@@ -210,10 +217,24 @@ void executeToken(Token* const token)
             std::cout << printString << std::endl;
             break;
         }
-        
-        default:
+        case CREATE:
+        {
+            //Identify type of variable
+
+            //Identify value
+
+            //Create variable pointer
+
+            //Store pointer to global vector
+
             break;
+        }
+        default:
+            std::cerr << "Error: Unknown Keyword" << std::endl;
+            return false;
     }
+
+    return true;
 }
 
 TokenType scanToken(char* commandString)

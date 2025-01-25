@@ -129,7 +129,7 @@ TokenType scanToken(char* commandString);
  * @brief Executes token from tokenized string
  * @param token Token object to be executed
 */
-void executeToken(Token* const token);
+bool executeToken(Token* const token);
 
 
 #endif
