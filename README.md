@@ -21,6 +21,7 @@ This language is FAR from complete, and is missing many basic functionalities th
     - Looping (For/While)
     - "Main" Function
     - First-class Functions
+    - CMake File
 
 ## Inspirations
 
