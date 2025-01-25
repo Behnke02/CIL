@@ -37,6 +37,10 @@ The idea for this project actually came from a class I took in college called "P
 
 The idea of this programming language was thought up several years ago, but it's only just now being implemented because of my newfound interest in compilers and interpreters in general, and I wanted to better understand how they work and how they are optimized by creating a translator for a language myself.  Something like Python is a bit too feature-complete for me since I don't have any experience making an interpreter or compiler, but that's when I found a copy of our original powerpoint presentation sitting on my computer, and it acted as a spark of motivation for me to try out, since that old project already provided me with a good idea of what kind of syntax the language would have.  This is mostly just a passion project in a pursuit to learn a new area of programming, and if it evolves into something actually usable for its theorized purpose of helping other get into coding, then that would make this project all the more enjoyable.
 
+### Experience in CS Tutoring
+
+Throughout my time both learning programming and tutoring other university students, I have noticed some patterns with students having a difficult time understanding basic computer science principles and program logic when learning to code, and in some instances have seen bad habits reappear in more advanced courses that have required correction.  These experiences in recognizing these patterns and correcting common mistakes have led to the founding ideas of the original "Computer" language back in 2023 having a syntax as closely related to English as possible in order to keep prospective learners from falling into bad habits and better optimizing the learning journey.
+
 ## Future README Additions
 
 Right now the language is still in very-early stages of development and experimentation, so it doesn't make sense yet to add some sections to this README that might be expected of a more polished repository.  As the language adds support for more features and the end-goal of the project is further realized/implemented, there are a few sections that I want to add in the future.
