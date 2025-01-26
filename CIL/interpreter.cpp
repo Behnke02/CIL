@@ -35,10 +35,13 @@
 //Variable Vector for later implementation of variable support
 std::vector<Variable*> programVariables;
 
+//Initialize current working line to 1
+unsigned int lineCount = 1;
+
 int main(int argc, char **argv)
 {
     //Check for proper argument count
-    if(argc < 1)
+    if(argc < 2 || std::strstr(argv[1], ".cil") == NULL)
     {
         //Display proper program execution format
         displayProgramExecution();
@@ -49,93 +52,87 @@ int main(int argc, char **argv)
     //Initialize program variables
         
         //Pointer to .cil file
-    FILE *fileptr;
+    std::ifstream fileStream;
+    
         //Vector of additional program arguments
     std::vector<std::string> kwargs;
 
     //Attempt to open provided file name
-        //TODO: Check for correct file extension ".cil"
+    fileStream.open(argv[1], std::ifstream::in);
 
-
-        //Check for successful file open
-    fileptr = fopen(argv[1], "r");
-
-    //For remaining provided arguments, push onto string vector
-    if(fileptr != NULL)
+    //Check for successful file open
+    if(fileStream.is_open())
     {
+        //For remaining provided arguments, push onto kwarg vector
         int argIndex = 2;
         while(argIndex < argc)
         {
             kwargs.push_back(argv[argIndex]);
             argIndex += 1;
         }
-    }
-
-    //Log beginning of program execution
-    {
-        std::cout << "Beginning Program Execution" << std::endl;
-        std::cout << "===========================" << std::endl;
-    }
+    
+        //Log beginning of program execution
+        {
+            std::cout << "Beginning Program Execution" << std::endl;
+            std::cout << "===========================" << std::endl;
+        }
 
     //Attempt to run .cil program
-    if(!processCommands(fileptr, kwargs))
-    {
-        //Error in Program Execution
-        //TODO: Log line of error occurence
-        //Log Error Message
-        std::cout << "Error occured in program execution" << std::endl;
-        std::cout << "Ending Program" << std::endl;
+        if(!processCommands(fileStream, kwargs))
+        {
+            //Error in Program Execution
+            //TODO: Log line of error occurence
+            //Log Error Message
+            std::cout << "Error occured in program execution at line " << lineCount << std::endl;
+            std::cout << "Ending Program" << std::endl;
+        }
 
         for(Variable* variable : programVariables)
         {
             delete variable;
         }
-        //Exit Program: Fail
+
+        fileStream.close();
+        //Log end of program execution
+        {
+            std::cout << "========================" << std::endl;
+            std::cout << "End of Program Execution" << std::endl;
+        }
+    
+        //Program execution successful
+            //Exit Program: Success
+        return EXIT_SUCCESS;
+    }
+    else
+    {
+        std::cerr << "Error opening file.  Please check file spelling." << std::endl;
         return EXIT_FAILURE;
     }
-    for(Variable* variable : programVariables)
-    {
-        delete variable;
-    }
-    fclose(fileptr);
-
-    //Log end of program execution
-    {
-        std::cout << "========================" << std::endl;
-        std::cout << "End of Program Execution" << std::endl;
-    }
-    
-    //Program execution successful
-        //Exit Program: Success
-    return EXIT_SUCCESS;
 }
 
-bool processCommands(FILE* const commandFile, std::vector<std::string> kwargs)
+bool processCommands(std::ifstream &commandFile, std::vector<std::string> kwargs)
 {
+    char stringBuffer[MAX_CSTR_LEN];
     //Check for additional keyword arguments
     if(kwargs.size() > 0)
     {
 
     }
 
-    //Initialize variables
-    std::string bufferStream;
-
     //Execute program by line until End of File
-    
-    while(captureCommandString(commandFile, bufferStream) > 0)
+    while(!commandFile.eof())
     {
-        //Capture file line into string
-        //Convert string into tokens
-        if(!tokenizeCommands(bufferStream))
+        while(commandFile.peek() == ' ')
         {
-            bufferStream.clear();
+            commandFile.ignore(1);
+        }
+        commandFile.getline(stringBuffer, MAX_CSTR_LEN, '\n');
+        if(!tokenizeCommands(stringBuffer))
+        {
             return false;
         }
-        //Move to next line
-        bufferStream.clear();
+        lineCount += 1;
     }
-
     return true;
 }
 
@@ -234,6 +231,11 @@ bool Token::executeToken()
         */
         case PRINT:
         {
+            /*
+             * I do not know why, but appending to an empty string
+             * does not print the first character of the full string.
+             * Initializing the printed string with a SPACE fixes the issue.
+            */
             std::string printString = " ";
             for(char* arg : this->kwargs)
             {

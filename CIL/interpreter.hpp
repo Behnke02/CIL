@@ -25,6 +25,7 @@
 #define INTERPRETER
 
 #include <iostream> //For I/O operations
+#include <fstream>  //For File Access
 #include <string>   //For std::string
 #include <cstring>  //For C-strings and tokenization
 #include <vector>   //For dynamic array storage (Tokens, Keyword Arguments, Variables, etc.)
@@ -35,6 +36,7 @@
 #define NULL_CHAR '\0'
 #define NEWLINE_CHAR '\n'
 #define SPACE ' '
+#define MAX_CSTR_LEN 256
 
 enum commandReturn
 {
@@ -170,11 +172,11 @@ void displayProgramExecution();
 
 /*
  * @brief Master function for .cil program execution
- * @param commandFile Pointer to .cil file
+ * @param commandFile ifstream to .cil file
  * @param kwargs Optional arguments for .cil file
  * @return State of program success/failure
 */
-bool processCommands(FILE* const commandFile, std::vector<std::string> kwargs);
+bool processCommands(std::ifstream &commandFile, std::vector<std::string> kwargs);
 
 /*
  * @brief Reads in one line from provided .cil file
