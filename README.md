@@ -24,7 +24,7 @@ This language is FAR from complete, and is missing many basic functionalities th
     - CMake File
 
 ### Current Feature Implementation
-Conversion from fopen to ifstream (as of 01/26/2025).
+Program Variable Support (as of 01/26/2025).
 
 ## Inspirations
 
