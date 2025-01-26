@@ -31,6 +31,7 @@
 #include <map>      //For keyword -> token mapping
 #include <cstdarg>  //For dynamic parameter counts
 
+//Standard constant definitions
 #define NULL_CHAR '\0'
 #define NEWLINE_CHAR '\n'
 #define SPACE ' '
@@ -41,6 +42,7 @@ enum commandReturn
     PARSE_SUCCESS
 };
 
+//Enum for all valid token types
 enum TokenType
 {
     //Primitive Functions
@@ -54,6 +56,7 @@ enum TokenType
     SCAN_ERROR = -2
 };
 
+//Map to correlate scanned text with intended token
 std::map<std::string, TokenType> tokenMap = 
 {
     {"PRINT", PRINT},
@@ -65,8 +68,10 @@ std::map<std::string, TokenType> tokenMap =
     {"BOOL", BOOL}
 };
 
+//Struct for storing .cil variable information
 typedef struct VariableType
 {
+    TokenType type;
     std::string name;
     std::string value;
 } Variable;
@@ -146,6 +151,12 @@ class Token
     */
     void appendArgs(const std::vector<char *> newArgs);
 
+    /*
+    * @brief Executes token from tokenized string
+    * @return Boolean representing success/failure of token execution
+    */
+    bool executeToken();
+
     private:
     TokenType type;
     std::vector<char *> kwargs;
@@ -186,13 +197,6 @@ bool tokenizeCommands(std::string bufferString);
  * @return TokenType enum for Token class initialization
 */
 TokenType scanToken(char* commandString);
-
-/*
- * @brief Executes token from tokenized string
- * @param token Token object to be executed
- * @return Boolean representing success/failure of token execution
-*/
-bool executeToken(Token* const token);
 
 
 #endif

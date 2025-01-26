@@ -24,7 +24,7 @@
 #include "interpreter.hpp"
 
 //Variable Vector for later implementation of variable support
-//std::vector<Variable>;
+std::vector<Variable*> programVariables;
 
 int main(int argc, char **argv)
 {
@@ -43,6 +43,7 @@ int main(int argc, char **argv)
     FILE *fileptr;
         //Vector of additional program arguments
     std::vector<std::string> kwargs;
+
     //Attempt to open provided file name
         //TODO: Check for correct file extension ".cil"
 
@@ -133,7 +134,7 @@ int captureCommandString(FILE* const commandFile, std::string &capturedString)
     intChar = fgetc(commandFile);
 
     //Clear leading spaces and empty lines
-    while(intChar != EOF && (char)(intChar) == ' ' && (char)(intChar) == NEWLINE_CHAR)
+    while(intChar != EOF && (char)(intChar) == SPACE && (char)(intChar) == NEWLINE_CHAR)
     {
         intChar = fgetc(commandFile);
     }
@@ -168,9 +169,9 @@ bool tokenizeCommands(std::string bufferString)
     char * p = std::strtok (cString," ");
     while (p!=0)
     {
-        char *newTokenArg = new char[strlen(p) + 1];
-        strcpy(newTokenArg, p);
-        strcat(newTokenArg, "\0");
+        char *newTokenArg = new char[std::strlen(p) + 1];
+        std::strcpy(newTokenArg, p);
+        std::strcat(newTokenArg, "\0");
         stringTokens.push_back(newTokenArg);
         p = std::strtok(NULL,"\"");
     }
@@ -187,7 +188,7 @@ bool tokenizeCommands(std::string bufferString)
         scannedToken->appendArgs(token);
     }
    
-    if(!executeToken(scannedToken))
+    if(!scannedToken->executeToken())
     {
         delete[] cString;
         delete scannedToken;
@@ -202,14 +203,18 @@ bool tokenizeCommands(std::string bufferString)
     return true;
 }
 
-bool executeToken(Token* const token)
+bool Token::executeToken()
 {
-    switch(token->getType())
+    switch(this->type)
     {
+        /*
+         * Scopes are created for each switch case for case-specific
+         * variable declaration and initialization
+        */
         case PRINT:
         {
             std::string printString = " ";
-            for(char* arg : token->getArgs())
+            for(char* arg : this->kwargs)
             {
                 printString.append(arg);
                 printString += " ";
@@ -219,13 +224,23 @@ bool executeToken(Token* const token)
         }
         case CREATE:
         {
-            //Identify type of variable
-
-            //Identify value
-
             //Create variable pointer
+            Variable *newVariable = new Variable;
+
+            //Identify type of variable
+                //1st kwarg
+            newVariable->type = INT;
+
+            //Identify variable name
+                //2nd kwarg
+            newVariable->name = "x";
+
+            //Identify variable value
+                //4th... kwarg
+            newVariable->value = "7";
 
             //Store pointer to global vector
+            programVariables.push_back(newVariable);
 
             break;
         }
