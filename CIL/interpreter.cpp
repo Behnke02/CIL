@@ -1,5 +1,14 @@
 /*************************************************************************
  *
+ *       ##########  ##########  #####
+ *       ##########  ##########  #####
+ *       #####         ######    #####
+ *       #####         ######    #####
+ *       #####         ######    #####
+ *       ##########  ##########  ###########
+ *       ##########  ##########  ###########
+ * 
+ * 
  * Copyright (C) Braedon Behnke, <bcbehnke@hotmail.com>.
  *
  * This software is licensed as described in the file LICENSE, which
@@ -76,6 +85,11 @@ int main(int argc, char **argv)
         //Log Error Message
         std::cout << "Error occured in program execution" << std::endl;
         std::cout << "Ending Program" << std::endl;
+
+        for(Variable* variable : programVariables)
+        {
+            delete variable;
+        }
         //Exit Program: Fail
         return EXIT_FAILURE;
     }
@@ -83,6 +97,7 @@ int main(int argc, char **argv)
     {
         delete variable;
     }
+    fclose(fileptr);
 
     //Log end of program execution
     {
@@ -104,7 +119,7 @@ bool processCommands(FILE* const commandFile, std::vector<std::string> kwargs)
     }
 
     //Initialize variables
-    std::string bufferStream = "Test\n";
+    std::string bufferStream;
 
     //Execute program by line until End of File
     
@@ -167,15 +182,17 @@ int captureCommandString(FILE* const commandFile, std::string &capturedString)
 
 bool tokenizeCommands(std::string bufferString)
 {
-    //int stringIndex = 0;
+    char *p;
     Token *scannedToken;
 
     std::vector<char *> stringTokens;
     char *cString = new char[bufferString.length() + 1];
     std::strcpy(cString, bufferString.c_str());
 
-    char * p = std::strtok (cString," ");
-    while (p!=0)
+    char* identifer = std::strtok(cString, " ");
+
+    p = std::strtok(NULL," \"");
+    while(p!=0)
     {
         char *newTokenArg = new char[std::strlen(p) + 1];
         std::strcpy(newTokenArg, p);
@@ -184,30 +201,26 @@ bool tokenizeCommands(std::string bufferString)
         p = std::strtok(NULL," \"");
     }
 
-    scannedToken = new Token(scanToken(stringTokens[0]));
-    stringTokens.erase(stringTokens.begin());
+    scannedToken = new Token(scanToken(identifer));
     //Process Tokens
     //First token should always be a keyword (For Now)
 
-    //Other arguments for first token
+    //Other arguments for token
     for(char* token : stringTokens)
     {
-        //std::cout << token << std::endl;
         scannedToken->appendArgs(token);
     }
-   
+    
+    delete[] cString;
+    stringTokens.clear();
     if(!scannedToken->executeToken())
     {
-        delete[] cString;
         delete scannedToken;
-        stringTokens.clear();
         return false;
     }
 
     //Return operation success
-    delete[] cString;
     delete scannedToken;
-    stringTokens.clear();
     return true;
 }
 
