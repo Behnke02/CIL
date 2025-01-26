@@ -23,6 +23,9 @@ This language is FAR from complete, and is missing many basic functionalities th
     - First-class Functions
     - CMake File
 
+### Current Feature Implementation
+Conversion from fopen to ifstream (as of 01/26/2025).
+
 ## Inspirations
 
 ### Why CIL over other languages?
