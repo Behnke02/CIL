@@ -1,6 +1,6 @@
 CC = g++
 DEBUG = -g
-CFLAGS = -Wall -pedantic -c -std=c++17 $(DEBUG)
+CFLAGS = -pedantic -Wall -Wextra -Werror -Wshadow -Wconversion -Wunreachable-code -c -std=c++17 $(DEBUG)
 LFLAGS = -Wall -pedantic $(DEBUG)
 
 

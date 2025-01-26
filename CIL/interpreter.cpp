@@ -79,6 +79,10 @@ int main(int argc, char **argv)
         //Exit Program: Fail
         return EXIT_FAILURE;
     }
+    for(Variable* variable : programVariables)
+    {
+        delete variable;
+    }
 
     //Log end of program execution
     {
@@ -94,6 +98,10 @@ int main(int argc, char **argv)
 bool processCommands(FILE* const commandFile, std::vector<std::string> kwargs)
 {
     //Check for additional keyword arguments
+    if(kwargs.size() > 0)
+    {
+
+    }
 
     //Initialize variables
     std::string bufferStream = "Test\n";
@@ -173,7 +181,7 @@ bool tokenizeCommands(std::string bufferString)
         std::strcpy(newTokenArg, p);
         std::strcat(newTokenArg, "\0");
         stringTokens.push_back(newTokenArg);
-        p = std::strtok(NULL,"\"");
+        p = std::strtok(NULL," \"");
     }
 
     scannedToken = new Token(scanToken(stringTokens[0]));
@@ -229,11 +237,11 @@ bool Token::executeToken()
 
             //Identify type of variable
                 //1st kwarg
-            newVariable->type = INT;
+            newVariable->type = scanToken(this->kwargs[0]);
 
             //Identify variable name
                 //2nd kwarg
-            newVariable->name = "x";
+            newVariable->name = this->kwargs[1];
 
             //Identify variable value
                 //4th... kwarg
