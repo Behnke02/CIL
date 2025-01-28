@@ -89,6 +89,8 @@ int main(int argc, char **argv)
 
         for(Variable* variable : programVariables)
         {
+            std::cout << variable->name << std::endl;
+            std::cout << variable->value << std::endl;
             delete variable;
         }
 
@@ -113,6 +115,8 @@ int main(int argc, char **argv)
 bool processCommands(std::ifstream &commandFile, std::vector<std::string> kwargs)
 {
     char stringBuffer[MAX_CSTR_LEN];
+    //TODO: Think of better variable name
+    std::string bufferString;
     //Check for additional keyword arguments
     if(kwargs.size() > 0)
     {
@@ -127,7 +131,9 @@ bool processCommands(std::ifstream &commandFile, std::vector<std::string> kwargs
             commandFile.ignore(1);
         }
         commandFile.getline(stringBuffer, MAX_CSTR_LEN, '\n');
-        if(!tokenizeCommands(stringBuffer))
+
+        bufferString = stringBuffer;
+        if(!tokenizeCommands(bufferString))
         {
             return false;
         }
@@ -143,38 +149,6 @@ void displayProgramExecution()
     std::cout << "    CILInterpreter <program file name> <program file arguments>" << std::endl;
     std::cout << "    Program File Name [required]: Name of .cil file to execute" << std::endl;
     std::cout << "    Program File Args [optional]: Command Line Arguments for .cil program" << std::endl;
-}
-
-int captureCommandString(FILE* const commandFile, std::string &capturedString)
-{
-    int intChar = EOF;
-
-    capturedString.clear();
-
-    intChar = fgetc(commandFile);
-
-    //Clear leading spaces and empty lines
-    while(intChar != EOF && (char)(intChar) == SPACE && (char)(intChar) == NEWLINE_CHAR)
-    {
-        intChar = fgetc(commandFile);
-    }
-
-    if(intChar == EOF)
-    {
-        return EOF_ERROR;
-    }
-
-    //Feed characters into buffer string until command delimiter is found
-    while(intChar != EOF && (char)(intChar) != NEWLINE_CHAR)
-    {
-        capturedString += (char)(intChar);
-
-        intChar = fgetc(commandFile);
-    }
-
-    capturedString += NULL_CHAR;
-
-    return PARSE_SUCCESS;
 }
 
 bool tokenizeCommands(std::string bufferString)
@@ -237,11 +211,11 @@ bool Token::executeToken()
              * Initializing the printed string with a SPACE fixes the issue.
             */
             std::string printString = " ";
-            for(char* arg : this->kwargs)
+             for(char* arg : this->kwargs)
             {
                 printString.append(arg);
                 printString += " ";
-            }
+            } 
             std::cout << printString << std::endl;
             break;
         }
@@ -253,15 +227,27 @@ bool Token::executeToken()
             //Identify type of variable
                 //1st kwarg
             newVariable->type = scanToken(this->kwargs[0]);
-
             //Identify variable name
                 //2nd kwarg
             newVariable->name = this->kwargs[1];
-
-            //Identify variable value
+            //Identify variable value, adjusting for type
                 //4th... kwarg
-            newVariable->value = "7";
+            newVariable->value = this->kwargs[3];
+            /* switch(newVariable->type)
+            {
+                case CHAR:
 
+                    break;
+                case STRING:
+
+                    break;
+                case BOOL:
+
+                    break;
+                default:
+                    newVariable->value = this->kwargs[3];
+            }
+            */
             //Store pointer to global vector
             programVariables.push_back(newVariable);
 
